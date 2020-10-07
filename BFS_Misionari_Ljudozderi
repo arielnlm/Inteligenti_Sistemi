@@ -1,0 +1,85 @@
+public class Misionari_Ljudozderi : MonoBehaviour
+{
+    Vector3[] sviCvorovi = new Vector3[100];
+    int[] red = new int[50];
+    int[] roditelji = new int[100];
+
+    int brojNapravljenih = 1;
+
+    private void Start() {
+        int prviIndex = 0, poslednjiIndex = 0, indexCvora = 0;
+
+        sviCvorovi[0] = new Vector3(3, 3, 1);
+
+        red[0] = prviIndex;
+        roditelji[0] = -1;
+        
+        while(prviIndex <= poslednjiIndex) {
+
+            indexCvora = red[prviIndex];
+            if(sviCvorovi[indexCvora].x == 0 && sviCvorovi[indexCvora].y == 0 && sviCvorovi[indexCvora].z == 0) {
+                Debug.Log("Zavrseno!");
+                break;
+            }
+            if(sviCvorovi[indexCvora].z == 1) {
+                for(int m=0; m<=2 && m <= sviCvorovi[indexCvora].x; m++) {
+                    for (int l = 0; l <= 2 && l<= sviCvorovi[indexCvora].y; l++) {
+                        if (m + l <= 2 && m + l > 0 && 
+                            (sviCvorovi[indexCvora].x - m == sviCvorovi[indexCvora].y - l ||
+                            sviCvorovi[indexCvora].x - m == 0 ||
+                            sviCvorovi[indexCvora].x - m == 3)) {
+                            bool posecen = false;
+                            for(int k=0; k <= poslednjiIndex; k++) {
+                                if(sviCvorovi[k] == new Vector3(sviCvorovi[indexCvora].x - m,
+                                    sviCvorovi[indexCvora].y - l, 0)) {
+                                    posecen = true;
+                                    break;
+                                }
+                            }
+                            if (!posecen) {
+                                sviCvorovi[++poslednjiIndex] = new Vector3(sviCvorovi[indexCvora].x - m,
+                                    sviCvorovi[indexCvora].y - l, 0);
+                                red[poslednjiIndex] = poslednjiIndex;
+                                roditelji[poslednjiIndex] = indexCvora;
+                            }
+                        }
+                    }
+                }
+            }else {
+                for (int m = 0; m <= 2 && m <= 3 - sviCvorovi[indexCvora].x; m++) {
+                    for (int l = 0; l <= 2 && l <= 3 - sviCvorovi[indexCvora].y; l++) {
+                        if (m + l <= 2 && m + l > 0 &&
+                            (sviCvorovi[indexCvora].x + m == sviCvorovi[indexCvora].y + l ||
+                            sviCvorovi[indexCvora].x + m == 0 ||
+                            sviCvorovi[indexCvora].x + m == 3)) {
+                            bool posecen = false;
+                            for (int k = 0; k <= poslednjiIndex; k++) {
+                                if (sviCvorovi[k] == new Vector3(sviCvorovi[indexCvora].x + m
+                                    , sviCvorovi[indexCvora].y + l, 1)) {
+                                    posecen = true;
+                                    break;
+                                }
+                            }
+                            if (!posecen) {
+                                sviCvorovi[++poslednjiIndex] = new Vector3(sviCvorovi[indexCvora].x + m, 
+                                    sviCvorovi[indexCvora].y + l, 1);
+                                red[poslednjiIndex] = poslednjiIndex;
+                                roditelji[poslednjiIndex] = indexCvora;
+                            }
+                        }
+                    }
+                }
+            }
+            prviIndex++;
+            
+        }
+        ispis(indexCvora);
+    }
+
+    void ispis(int index) {
+        if (roditelji[index] != -1) {
+            ispis(roditelji[index]);
+        }
+        Debug.Log(sviCvorovi[index] + "  -----  " + (new Vector3(3,3,1)-sviCvorovi[index]));
+    }
+}
